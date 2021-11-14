@@ -64,86 +64,86 @@ paths:
       summary: 'ファイル情報の一覧の取得'
       description: 'ファイル情報の一覧を取得する。
       '
-      parameters:
-      - name: file_id
-        in: query
-        description: '取得する(しない)ファイル情報の一覧のファイルID<br>
-        <ul>
-        <li>※ 未設定の場合、全て。 </li>
-        <li>※ 除外する場合は、先頭に - を付与。</li>
-        </ul>
-        '
-        schema:
-          type: array
-          items:
-            $ref: '#/components/schemas/FileId'
-          uniqueItems: true
-        style: form
-        explode: false
-      - name: mime_type
-        in: query
-        description: '取得する(しない)ファイル情報の一覧のMIMEタイプ<br>
-        <ul>
-        <li>※ 未設定の場合、全て。 </li>
-        <li>※ 除外する場合は、先頭に - を付与。</li>
-        <li>※ 参照 : [Multipurpose Internet Mail Extensions \- Wikipedia](https://ja.wikipedia.org/wiki/Multipurpose_Internet_Mail_Extensions)</li>
-        </ul>
-        '
-        schema:
-          type: string
-          example: "image/jpeg"
-        style: form
-        explode: false
-      - name: sort
-        in: query
-        description: '取得するファイル情報の順番<br>
-        <ul>
-        <li>※ 未設定の場合、ファイルの登録日時の降順(-created_at)。</li>
-        <li>※ 逆順の場合は、先頭に - を付与。</li>
-        </ul>
-        '
-        schema:
-          type: string
-          description: '… ファイル情報の順番の項目'
-          enum: [
-            'created_at', '-created_at',
-            ]
-          default: -created_at
-      - name: limit
-        in: query
-        description: '取得するファイル情報の上限件数<br>
-        <ul>
-        <li>※ 未設定の場合、3。</li>
-        </ul>
-        '
-        schema:
-          type: integer
-          format: int64
-          default: 3
-      - name: since
-        in: query
-        description: 'ファイル情報の取得範囲の始点日時 (ISO8601)<br>
-        <ul>
-        <li>※ 未設定の場合、UNIXエポック (1970-01-01T00:00:00Z)。</li>
-        <li>※ 当該日時は、含む。</li>
-        </ul>
-        '
-        schema:
-          type: string
-          format: date-time
-          default: '1970-01-01T00:00:00Z'
-      - name: until
-        in: query
-        description: 'ファイル情報の取得範囲の終点日時 (ISO8601)<br>
-        <ul>
-        <li>※ 未設定の場合、現在時刻。</li>
-        <li>※ 当該日時は、含まない。</li>
-        </ul>
-        '
-        schema:
-          type: string
-          format: date-time
-          #default: '※現在時刻 (yyyy-MM-ddTHH:mm:ssZ)'
+      #parameters:
+      #- name: file_id
+      #  in: query
+      #  description: '取得する(しない)ファイル情報の一覧のファイルID<br>
+      #  <ul>
+      #  <li>※ 未設定の場合、全て。 </li>
+      #  <li>※ 除外する場合は、先頭に - を付与。</li>
+      #  </ul>
+      #  '
+      #  schema:
+      #    type: array
+      #    items:
+      #      $ref: '#/components/schemas/FileId'
+      #    uniqueItems: true
+      #  style: form
+      #  explode: false
+      #- name: mime_type
+      #  in: query
+      #  description: '取得する(しない)ファイル情報の一覧のMIMEタイプ<br>
+      #  <ul>
+      #  <li>※ 未設定の場合、全て。 </li>
+      #  <li>※ 除外する場合は、先頭に - を付与。</li>
+      #  <li>※ 参照 : [Multipurpose Internet Mail Extensions \- Wikipedia](https://ja.wikipedia.org/wiki/Multipurpose_Internet_Mail_Extensions)</li>
+      #  </ul>
+      #  '
+      #  schema:
+      #    type: string
+      #    example: "image/jpeg"
+      #  style: form
+      #  explode: false
+      #- name: sort
+      #  in: query
+      #  description: '取得するファイル情報の順番<br>
+      #  <ul>
+      #  <li>※ 未設定の場合、ファイルの登録日時の降順(-created_at)。</li>
+      #  <li>※ 逆順の場合は、先頭に - を付与。</li>
+      #  </ul>
+      #  '
+      #  schema:
+      #    type: string
+      #    description: '… ファイル情報の順番の項目'
+      #    enum: [
+      #      'created_at', '-created_at',
+      #      ]
+      #    default: -created_at
+      #- name: limit
+      #  in: query
+      #  description: '取得するファイル情報の上限件数<br>
+      #  <ul>
+      #  <li>※ 未設定の場合、3。</li>
+      #  </ul>
+      #  '
+      #  schema:
+      #    type: integer
+      #    format: int64
+      #    default: 3
+      #- name: since
+      #  in: query
+      #  description: 'ファイル情報の取得範囲の始点日時 (ISO8601)<br>
+      #  <ul>
+      #  <li>※ 未設定の場合、UNIXエポック (1970-01-01T00:00:00Z)。</li>
+      #  <li>※ 当該日時は、含む。</li>
+      #  </ul>
+      #  '
+      #  schema:
+      #    type: string
+      #    format: date-time
+      #    default: '1970-01-01T00:00:00Z'
+      #- name: until
+      #  in: query
+      #  description: 'ファイル情報の取得範囲の終点日時 (ISO8601)<br>
+      #  <ul>
+      #  <li>※ 未設定の場合、現在時刻。</li>
+      #  <li>※ 当該日時は、含まない。</li>
+      #  </ul>
+      #  '
+      #  schema:
+      #    type: string
+      #    format: date-time
+      #    #default: '※現在時刻 (yyyy-MM-ddTHH:mm:ssZ)'
       responses:
         200:
           description: OK
@@ -187,7 +187,7 @@ paths:
       </ul>
       '
       requestBody:
-        description: '検査結果をインポートするデメカルファイル(*.csv)<br>
+        description: 'アップロードするファイル<br>
         '
         content:
           multipart/form-data:
@@ -236,7 +236,7 @@ paths:
       - files
       operationId: delete_file
       summary: 'ファイルの削除'
-      description: 'ファイルを削除する。'
+      description: 'ファイル情報も含め、ファイルを削除する。'
       parameters:
       - name: file_id
         in: path
@@ -279,8 +279,8 @@ paths:
       tags:
       - files
       operationId: get_file_download
-      summary: 'ファイルの取得'
-      description: 'ファイルを application/octet-stream で取得(ダウンロード)する。
+      summary: 'ファイルのダウンロード'
+      description: 'ファイルを application/octet-stream でダウンロードする。
       <ul>
       <li>※ Swagger UI で、取得可。</li>
       </ul>
@@ -288,7 +288,7 @@ paths:
       parameters:
       - name: file_id
         in: path
-        description: '取得(ダウンロード)するファイルID'
+        description: 'ダウンロードするファイルID'
         required: true
         schema:
           $ref: '#/components/schemas/FileId'
