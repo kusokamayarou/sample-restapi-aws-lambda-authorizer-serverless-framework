@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+  <!-- ページ表示時、読み込み時に JavaScript のコードを実行する - JavaScript プログラミング https://www.ipentec.com/document/javascript-run-javascript-on-load-page -->
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <title></title>
+    <meta charset="utf-8" />
+    <script type="text/javascript">
+    window.onload = function () {
+      header_authorization = document.getElementById("Header_Authorization");
+      header_authorization.innerHTML = getUrlHash('id_token');
+    }
+    /* javascriptでURLのパラメータを取得する方法 | ProgramMemo http://program-memo.com/archives/53 */
+    function getUrlHash(name) {
+      console.log(name);
+      name = name.replace(/[\[]/, '\\[').replace(/[\]]/, '\\]');
+      var regex = new RegExp('[\\#&]' + name + '=([^&#]*)');
+      console.log(regex);
+      console.log(window.location);
+      console.log(window.location.hash);
+      console.log(location.hash);
+      var results = regex.exec(location.hash);
+      console.log(results);
+      return results === null ? '' : decodeURIComponent(results[1].replace(/\+/g, ' '));
+    };
+    </script>
+  </head>
+<body>
+  <!--div>Header_Authorization :</div-->
+  <div id="Header_Authorization"></div>
+  <br>
+</body>
+</html>

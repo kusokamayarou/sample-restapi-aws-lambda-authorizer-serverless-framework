@@ -1,0 +1,432 @@
+openapi: 3.0.1
+info:
+  title: Sample Rest API
+  version: 0.0.0
+  description: '
+    <details>
+    <summary>【認証のやり方】</summary>
+    <ul>
+    <li>test,dev :
+    <ul>
+    <li type="1">Servers リストで、test用・dev用を選択</li>
+    <li type="1">Authorize ダイアログで、Header_X-API-Key を設定</li>
+    <li type="1">Authorize ダイアログで、<a href="https://xxxx.auth.ap-northeast-1.amazoncognito.com/oauth2/authorize?response_type=token&client_id=[Amazon Cognito App Client ID]&redirect_uri=https://kusokamayarou.github.io/sample-restapi-aws-lambda-authorizer-serverless-framework/authorize.html&state=STATE&scope=openid+profile+aws.cognito.signin.user.admin" target="_blank" rel="noopener noreferrer">Header_Authorization</a> or OAuth2_Test を設定</li>
+    <li type="1">認証を<a href="https://xxxx.auth.ap-northeast-1.amazoncognito.com/logout?client_id=[Amazon Cognito App Client ID]&logout_uri=https://kusokamayarou.github.io/sample-restapi-aws-lambda-authorizer-serverless-framework/">クリア</a></li>
+    </ul>
+    <br>
+    <li>prod :
+    <ul>
+    <li type="1">Servers リストで、prod用 を選択。</li>
+    <li type="1">Authorize ダイアログで、Header_X-API-Key を設定。</li>
+    <li type="1">Authorize ダイアログで、<a href="https://xxxx.auth.ap-northeast-1.amazoncognito.com/oauth2/authorize?response_type=token&client_id=[aws cognito app client id]&redirect_uri=https://kusokamayarou.github.io/sample-restapi-aws-lambda-authorizer-serverless-framework/authorize.html&state=STATE&scope=openid+profile+aws.cognito.signin.user.admin" target="_blank" rel="noopener noreferrer">Header_Authorization</a> or OAuth2 を設定。</li>
+    <li type="1">認証を<a href="https://xxxx.auth.ap-northeast-1.amazoncognito.com/logout?client_id=[Amazon Cognito App Client ID]&logout_uri=https://kusokamayarou.github.io/sample-restapi-aws-lambda-authorizer-serverless-framework/">クリア</a></li>
+    </ul>
+    <br>
+    <li>※ Header_Authorization の設定 : リンククリックから値を取得し、Authorize ダイアログで設定する。</li>
+    <li>※ OAuth2 の設定 : Authorize ダイアログで client_id、Scopes の全チェックを設定し、認証する。</li>
+    </ul>
+    </details>
+    <br>
+    '
+  termsOfService: kusokamayarou.github.io/sample-restapi-aws-lambda-authorizer-serverless-framework/terms/
+  contact:
+    name: kusokamayarou (KUSOKAMAYAROU)
+    url: https://github.com/kusokamayarou
+    email: xxxx@xxxx.com
+  license:
+    name: MIT License
+    url: https://github.com/kusokamayarou/sample-restapi-aws-lambda-authorizer-serverless-framework/blob/main/LICENSE
+externalDocs:
+  description: Find out more about - kusokamayarou/sample-restapi-aws-lambda-authorizer-serverless-framework
+  url: https://github.com/kusokamayarou/sample-restapi-aws-lambda-authorizer-serverless-framework
+servers:
+- url: http://localhost:3000/dev/v1
+- url: https://xxxxxxxxxx.execute-api.ap-northeast-1.amazonaws.com/dev/v1
+- url: https://xxxxxxxxxx.execute-api.ap-northeast-1.amazonaws.com/test/v1
+- url: https://xxxxxxxxxx.execute-api.ap-northeast-1.amazonaws.com/prod/v1
+tags:
+- name: files
+  description: 'ファイル'
+  externalDocs:
+    description: Find out more
+    url: https://github.com/kusokamayarou/sample-restapi-aws-lambda-authorizer-serverless-framework
+- name: nop
+  description: 'No operation'
+  externalDocs:
+    description: Find out more
+    url: https://github.com/kusokamayarou/sample-restapi-aws-lambda-authorizer-serverless-framework
+paths:
+  /files:
+    get:
+      tags:
+      - files
+      operationId: get_files
+      summary: 'ファイル情報の一覧の取得'
+      description: 'ファイル情報の一覧を取得する。
+      '
+      parameters:
+      - name: file_id
+        in: query
+        description: '取得する(しない)ファイル情報の一覧のファイルID<br>
+        <ul>
+        <li>※ 未設定の場合、全て。 </li>
+        <li>※ 除外する場合は、先頭に - を付与。</li>
+        </ul>
+        '
+        schema:
+          type: array
+          items:
+            $ref: '#/components/schemas/FileId'
+          uniqueItems: true
+        style: form
+        explode: false
+      - name: mime_type
+        in: query
+        description: '取得する(しない)ファイル情報の一覧のMIMEタイプ<br>
+        <ul>
+        <li>※ 未設定の場合、全て。 </li>
+        <li>※ 除外する場合は、先頭に - を付与。</li>
+        <li>※ 参照 : [Multipurpose Internet Mail Extensions \- Wikipedia](https://ja.wikipedia.org/wiki/Multipurpose_Internet_Mail_Extensions)</li>
+        </ul>
+        '
+        schema:
+          type: string
+          example: "image/jpeg"
+        style: form
+        explode: false
+      - name: sort
+        in: query
+        description: '取得するファイル情報の順番<br>
+        <ul>
+        <li>※ 未設定の場合、ファイルの登録日時の降順(-created_at)。</li>
+        <li>※ 逆順の場合は、先頭に - を付与。</li>
+        </ul>
+        '
+        schema:
+          type: string
+          description: '… ファイル情報の順番の項目'
+          enum: [
+            'created_at', '-created_at',
+            ]
+          default: -created_at
+      - name: limit
+        in: query
+        description: '取得するファイル情報の上限件数<br>
+        <ul>
+        <li>※ 未設定の場合、3。</li>
+        </ul>
+        '
+        schema:
+          type: integer
+          format: int64
+          default: 3
+      - name: since
+        in: query
+        description: 'ファイル情報の取得範囲の始点日時 (ISO8601)<br>
+        <ul>
+        <li>※ 未設定の場合、UNIXエポック (1970-01-01T00:00:00Z)。</li>
+        <li>※ 当該日時は、含む。</li>
+        </ul>
+        '
+        schema:
+          type: string
+          format: date-time
+          default: '1970-01-01T00:00:00Z'
+      - name: until
+        in: query
+        description: 'ファイル情報の取得範囲の終点日時 (ISO8601)<br>
+        <ul>
+        <li>※ 未設定の場合、現在時刻。</li>
+        <li>※ 当該日時は、含まない。</li>
+        </ul>
+        '
+        schema:
+          type: string
+          format: date-time
+          #default: '※現在時刻 (yyyy-MM-ddTHH:mm:ssZ)'
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  files:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/FileInf'
+        400:
+          description: Bad Request
+          content: {}
+        401:
+          description: Unauthorized
+          content: {}
+        403:
+          description: Forbidden
+          content: {}
+        404:
+          description: Not Found
+          content: {}
+        500:
+          description: Internal Server Error
+          content: {}
+      security:
+        - Header_X-API-Key: []
+        - Header_Authorization: []
+          OAuth2_test: [openid, aws.cognito.signin.user.admin]
+          OAuth2_prod: [openid, aws.cognito.signin.user.admin]
+    post:
+      tags:
+      - files
+      operationId: post_file
+      summary: 'ファイルのアップロード'
+      description: 'ファイルをアップロードする。<br>
+      <ul>
+      <li>※ 1回のリクエストでのアップロード上限が、6MB。</li>
+      </ul>
+      '
+      requestBody:
+        description: '検査結果をインポートするデメカルファイル(*.csv)<br>
+        '
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                file:
+                  type: string
+                  format: binary
+        required: true
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  files:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/FileInf'
+        400:
+          description: Bad Request
+          content: {}
+        401:
+          description: Unauthorized
+          content: {}
+        403:
+          description: Forbidden
+          content: {}
+        404:
+          description: Not Found
+          content: {}
+        500:
+          description: Internal Server Error
+          content: {}
+      security:
+        - Header_X-API-Key: []
+        - Header_Authorization: []
+          OAuth2_test: [openid, aws.cognito.signin.user.admin]
+          OAuth2_prod: [openid, aws.cognito.signin.user.admin]
+  /files/{file_id}:
+    delete:
+      tags:
+      - files
+      operationId: delete_file
+      summary: 'ファイルの削除'
+      description: 'ファイルを削除する。'
+      parameters:
+      - name: file_id
+        in: path
+        description: '削除するファイルID'
+        required: true
+        schema:
+          $ref: '#/components/schemas/FileId'
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  file:
+                    $ref: '#/components/schemas/FileInf'
+        400:
+          description: Bad Request
+          content: {}
+        401:
+          description: Unauthorized
+          content: {}
+        403:
+          description: Forbidden
+          content: {}
+        404:
+          description: Not Found
+          content: {}
+        500:
+          description: Internal Server Error
+          content: {}
+      security:
+        - Header_X-API-Key: []
+        - Header_Authorization: []
+          OAuth2_test: [openid, aws.cognito.signin.user.admin]
+          OAuth2_prod: [openid, aws.cognito.signin.user.admin]
+  /files/{file_id}/download:
+    get:
+      tags:
+      - files
+      operationId: get_file_download
+      summary: 'ファイルの取得'
+      description: 'ファイルを application/octet-stream で取得(ダウンロード)する。
+      <ul>
+      <li>※ Swagger UI で、取得可。</li>
+      </ul>
+      '
+      parameters:
+      - name: file_id
+        in: path
+        description: '取得(ダウンロード)するファイルID'
+        required: true
+        schema:
+          $ref: '#/components/schemas/FileId'
+      responses:
+        200:
+          description: OK
+          content:
+            application/octet-stream:
+              schema:
+                type: string
+                format: binary
+          headers:
+            Content-Disposition:
+              schema:
+                type: string
+                example: 'attachment; filename=sample.png'
+        400:
+          description: Bad Request
+          content: {}
+        401:
+          description: Unauthorized
+          content: {}
+        403:
+          description: Forbidden
+          content: {}
+        404:
+          description: Not Found
+          content: {}
+        500:
+          description: Internal Server Error
+          content: {}
+      security:
+        - Header_X-API-Key: []
+        - Header_Authorization: []
+          OAuth2_test: [openid, aws.cognito.signin.user.admin]
+          OAuth2_prod: [openid, aws.cognito.signin.user.admin]
+  /nop:
+    get:
+      tags:
+      - nop
+      operationId: get_nop
+      summary: 'No operation - Get'
+      description: 'No operation - Get'
+      responses:
+        200:
+          description: OK
+          content: {}
+        400:
+          description: Bad Request
+          content: {}
+        401:
+          description: Unauthorized
+          content: {}
+        403:
+          description: Forbidden
+          content: {}
+        404:
+          description: Not Found
+          content: {}
+        500:
+          description: Internal Server Error
+          content: {}
+      security:
+        - Header_X-API-Key: []
+        - Header_Authorization: []
+          OAuth2_test: [openid, aws.cognito.signin.user.admin]
+          OAuth2_prod: [openid, aws.cognito.signin.user.admin]
+components:
+  schemas:
+    FileId:
+      description: '… ファイルID'
+      type: string
+      format: uuid
+    FileInf:
+      description: '… ファイル情報'
+      type: object
+      properties:
+        id:
+          $ref: '#/components/schemas/FileId'
+        name:
+          description: '… ファイル名'
+          type: string
+          example: 'sample.png'
+        size:
+          description: '… ファイルサイズ [B]'
+          type: number
+          example: 160.5
+        mime_type:
+          description: '… MIMEタイプ [Multipurpose Internet Mail Extensions \- Wikipedia](https://ja.wikipedia.org/wiki/Multipurpose_Internet_Mail_Extensions)'
+          type: string
+          example: "image/jpeg"
+        owner:
+          description: 'オーナー (ユーザーID)'
+          type: string
+        created_at:
+          description: '作成日時 (ISO8601)'
+          type: string
+          format: date-time
+        created_by:
+          description: '作成者 (ユーザーID)'
+          type: string
+        updated_at:
+          description: '更新日時 (ISO8601)'
+          type: string
+          format: date-time
+        updated_by:
+          description: '更新者 (ユーザーID)'
+          type: string
+  securitySchemes:
+    Header_X-API-Key:
+      name: X-API-Key
+      description: <pre><code>[API Key]</code></pre>
+      type: apiKey
+      in: header
+    Header_Authorization:
+      name: Authorization
+      description: <pre><code></code></pre>
+      type: apiKey
+      in: header
+    # Swagger 3.0のOAuth認証にCognito User PoolsのOAuth Clientを使う | DevelopersIO
+    # https://dev.classmethod.jp/articles/swagger-3-oauth-cognito-user-pools/
+    OAuth2_test:
+      description: <pre><code>[Amazon Cognito App Client ID]</code></pre>
+      type: oauth2
+      flows:
+        authorizationCode:
+          authorizationUrl: https://xxxx.auth.ap-northeast-1.amazoncognito.com/oauth2/authorize
+          tokenUrl: https://xxxx.auth.ap-northeast-1.amazoncognito.com/oauth2/token
+          scopes:
+            openid: openid
+            aws.cognito.signin.user.admin: aws.cognito.signin.user.admin
+    OAuth2_prod:
+      description: <pre><code>[Amazon Cognito App Client ID]</code></pre>
+      type: oauth2
+      flows:
+        authorizationCode:
+          authorizationUrl: https://xxxx.auth.ap-northeast-1.amazoncognito.com/oauth2/authorize
+          tokenUrl: https://xxxx.auth.ap-northeast-1.amazoncognito.com/oauth2/token
+          scopes:
+            openid: openid
+            aws.cognito.signin.user.admin: aws.cognito.signin.user.admin
